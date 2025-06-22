@@ -62,3 +62,5 @@ On the options page, you can:
 - **Manage Sessions**: Save or restore your entire browser state (all windows and tabs).
 - **Configure Defaults**: Set preferences for auto-organization and default group colors. You can also set a custom "chunk size" to control how many tabs are placed in each new window during organization.
 - **Manage Data**: Reset all settings or clear your saved sessions and groups.
+
+- Content-based grouping uses local NLP powered by compromise (browser UMD build), ensuring privacy and compatibility with Chrome extensions.

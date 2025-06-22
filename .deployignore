@@ -17,4 +17,6 @@ node_modules/
 
 # Git history (if present)
 .git
-.gitignore 
+.gitignore
+
+# Do NOT ignore lib/compromise.min.js (needed for extension runtime) 

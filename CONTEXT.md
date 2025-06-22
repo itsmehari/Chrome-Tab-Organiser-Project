@@ -138,3 +138,7 @@ During this process, the user noticed there were two `prd.md` files. I was instr
 The user then reported that they had accidentally lost all project files and requested a full restoration. I began restoring the project from memory, successfully recreating `manifest.json`, `background.js`, `popup.html`, and `popup.js`. The user interrupted the process while I was restoring `options.html`, first asking to generate the `dist` folder (which I advised against as the restoration was incomplete and the build would fail), and then asking me to stop the restoration altogether.
 
 After successfully restoring the project and setting up a GitHub repository, a bug in the deployment script was discovered that caused the `dist` folder to be packaged incorrectly. This was fixed. A feature to sort the domain analysis list was added. Then, a bug that incorrectly identified grouped tabs was found and fixed. Finally, a Content Security Policy error was identified, which was resolved by downloading the external libraries (`Chart.js`, `Shepherd.js`) and serving them locally from a new `lib/` directory.
+
+- NLP for content-based tab grouping now uses compromise (browser UMD build), not wink-nlp.
+- compromise is loaded in both background and preview contexts as window.nlp.
+- No build/bundler required; all code is browser/extension compatible.

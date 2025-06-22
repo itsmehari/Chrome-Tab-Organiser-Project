@@ -1,3 +1,5 @@
+importScripts('lib/compromise.min.js');
+
 // Smart Tab Organiser Background Script
 // Scans all Chrome windows/tabs, collects tabs by domain, and provides actions for organizing, closing, opening, and analyzing.
 
@@ -546,65 +548,65 @@ async function copyUrlsByDomain(domain) {
 }
 
 // --- Content Analysis ---
+// Use compromise for NLP
+// Remove wink-nlp imports and logic
+// Add compromise via UMD in manifest or as a local file if needed
+
 async function analyzeTabContent(tabId) {
     try {
         const results = await chrome.scripting.executeScript({
             target: { tabId: tabId },
             func: () => document.body.innerText,
         });
-        // Ensure we have a result and it's a string.
         if (results && results[0] && typeof results[0].result === 'string') {
             return results[0].result;
         }
     } catch (e) {
-        // This can happen on special pages like chrome:// urls, so we'll just ignore it.
+        // Intentionally empty: ignore errors from special pages like chrome:// URLs
     }
     return '';
 }
 
-function getKeywords(text) {
-    const stopWords = new Set(['and','the','is','in','it','of','a','for','on','with','to','i','you','he','she','we','they','what','where','when','why','how','an','or']);
-    const words = text.toLowerCase().match(/\b\w{4,}\b/g) || []; // Words with 4+ letters
-    const freq = {};
-    words.forEach(word => {
-        if (!stopWords.has(word)) {
-            freq[word] = (freq[word] || 0) + 1;
-        }
-    });
-    // Return top 5 keywords
-    return Object.keys(freq).sort((a,b) => freq[b] - freq[a]).slice(0, 5);
+// Extract main topics/entities from text using compromise
+function extractTopics(text) {
+    if (!text) return [];
+    const nlpDoc = nlp(text);
+    const nouns = nlpDoc.nouns().out('frequency');
+    return nouns.slice(0, 3).map(f => f.normal);
 }
 
 async function suggestGroupsByContent() {
     const tabs = await chrome.tabs.query({ url: ["http://*/*", "https://*/*"] });
-    const tabContents = await Promise.all(tabs.map(async tab => ({
-        id: tab.id,
-        title: tab.title,
-        url: tab.url,
-        keywords: getKeywords(await analyzeTabContent(tab.id)),
-    })));
+    const tabContents = await Promise.all(tabs.map(async tab => {
+        const content = await analyzeTabContent(tab.id);
+        const topics = extractTopics(content);
+        return {
+            id: tab.id,
+            title: tab.title,
+            url: tab.url,
+            topics,
+        };
+    }));
 
-    const keywordMap = {};
+    // Group tabs by shared topic/entity
+    const topicMap = {};
     tabContents.forEach(tab => {
-        tab.keywords.forEach(keyword => {
-            if (!keywordMap[keyword]) keywordMap[keyword] = [];
-            keywordMap[keyword].push(tab);
+        tab.topics.forEach(topic => {
+            if (!topicMap[topic]) topicMap[topic] = [];
+            topicMap[topic].push(tab);
         });
     });
 
     const suggestions = [];
-    Object.entries(keywordMap).forEach(([keyword, tabsInMap]) => {
-        if (tabsInMap.length > 2) { // Only suggest groups for 3+ tabs
-             // Avoid creating duplicate groups
+    Object.entries(topicMap).forEach(([topic, tabsInMap]) => {
+        if (tabsInMap.length > 2) {
             if (!suggestions.some(s => s.tabs.some(t => t.id === tabsInMap[0].id))) {
-                suggestions.push({ name: `Topic: ${keyword}`, tabs: tabsInMap });
+                suggestions.push({ name: `Topic: ${topic}`, tabs: tabsInMap });
             }
         }
     });
-    
     await chrome.storage.local.set({ groupSuggestions: suggestions });
     await chrome.tabs.create({ url: 'preview.html' });
-
     return { success: true };
 }
 
@@ -687,4 +689,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
   })();
   return true; // Indicates asynchronous response
-}); 
+});
+
+// NOTE: compromise must be loaded as window.nlp in the background context. If using MV3, bundle background.js with compromise or inject it at runtime. See documentation for details. 

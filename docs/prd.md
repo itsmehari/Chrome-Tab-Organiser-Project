@@ -37,6 +37,15 @@ This checklist will track the development progress.
 - [x] **Code Linting**: Integrate ESLint for consistent code style.
 - [x] **Docs: Update User Guide, Architecture, and PRD.**
 - [x] **Docs: Maintain `CONTEXT.md`.**
+- [x] **UI: Update `preview.html` to use a responsive CSS grid for group cards**
+- [x] **UI: Add custom CSS for cards, hover effects, and responsive layout**
+- [x] **UI: Display tab favicons, titles, and URLs in each card**
+- [x] **UI: Add "Create Group" button to each card**
+- [x] **UI: Add search/filter bar for groups/tabs**
+- [x] **UI: Add "Create All Groups" button at the top**
+- [x] **UI: Add expand/collapse for group details**
+- [x] **UI: Add toasts/feedback for actions (e.g., group created)**
+- [x] **UI: Add subtle animations for card entry/removal**
 
 ## 3. Organization Logic Details
 
@@ -64,3 +73,60 @@ This checklist will track the development progress.
 3.  **Domain Mapping**: It maps the remaining tabs by their base domain.
 4.  **Threshold Check**: For each domain, it checks if there are **more than 5** tabs.
 5.  **Grouping**: For each domain that meets the threshold, it executes the exact same chunking and grouping logic as the per-domain "Organize" button described above.
+
+## 4. Upcoming Features: UI/UX Redesign & Smarter Grouping (NLP)
+
+### [ ] **Feature: Content Grouping Preview UI/UX Redesign**
+
+- [ ] **Design**
+  - [ ] Research modern, soulful UI inspiration (cards, grids, color palettes, microinteractions)
+  - [ ] Sketch wireframe for grid-based group preview
+- [ ] **Implementation**
+  - [x] Update `preview.html` to use a responsive CSS grid for group cards
+  - [x] Add custom CSS for cards, hover effects, and responsive layout
+  - [x] Display tab favicons, titles, and URLs in each card
+  - [x] Add "Create Group" button to each card
+  - [x] Add "Create All Groups" button at the top
+  - [x] Add search/filter bar for groups/tabs
+  - [x] Add expand/collapse for group details
+  - [x] Add toasts/feedback for actions (e.g., group created)
+  - [x] Add subtle animations for card entry/removal
+- [ ] **Testing & Debugging**
+  - [x] Test on various screen sizes (desktop, tablet, mobile)
+  - [x] Test with many/few groups and tabs
+  - [x] Lint and debug all new code
+- [ ] **Documentation**
+  - [x] Update user guide and architecture docs with new UI screenshots and workflow
+
+---
+
+### [ ] **Feature: Smarter Grouping with Free NLP**
+
+- [x] Use compromise (browser UMD build) for NLP, not wink-nlp. No bundler required; works in Chrome extension context.
+- [x] Research and select a free, open-source JS NLP library (e.g., compromise)
+- [x] Add the library to the project (local or via CDN if allowed)
+- [x] Update background script to extract tab content as before
+- [x] Use NLP to extract topics, named entities, or cluster tabs by semantic similarity
+- [x] Tune grouping logic for sensible, human-friendly clusters
+- [x] Display new NLP-based group names in the preview grid
+- [x] Show extracted topics/entities as group titles or tags
+- [ ] **Testing & Debugging**
+  - [x] Test with a variety of tab sets (tech, news, docs, etc.)
+  - [x] Lint and debug all new code
+- [ ] **Documentation**
+  - [x] Update PRD, user guide, and architecture docs with new grouping logic
+
+---
+
+### [ ] **Final Steps**
+
+- [ ] **Manual Testing**
+  - [ ] Run through the manual testing checklist for all new features
+- [ ] **Linting**
+  - [ ] Ensure all code passes ESLint with no errors
+- [ ] **Commit & Push**
+  - [ ] Commit all changes to Git with clear messages
+  - [ ] Push to GitHub repository
+- [ ] **Deployment**
+  - [ ] Run deployment script to update the `dist` folder
+  - [ ] Load and test the extension in Chrome

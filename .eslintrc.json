@@ -17,5 +17,23 @@
   },
   "globals": {
     "Chart": "readonly"
-  }
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "lib/compromise.min.js"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["lib/compromise.min.js"]
+    }
+  ]
 } 

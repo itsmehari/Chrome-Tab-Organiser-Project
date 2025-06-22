@@ -61,9 +61,22 @@ Copy-Item -Path (Join-Path $SourceDirectory "*.html") -Destination $DistDirector
 Copy-Item -Path (Join-Path $SourceDirectory "icons") -Destination $DistDirectory -Recurse
 Copy-Item -Path (Join-Path $SourceDirectory "lib") -Destination $DistDirectory -Recurse
 
+# Ensure dist/lib exists
+$DistLibDirectory = Join-Path $DistDirectory "lib"
+if (-not (Test-Path $DistLibDirectory)) {
+    New-Item -ItemType Directory -Force -Path $DistLibDirectory | Out-Null
+}
+# Always copy compromise.min.js to dist/lib
+$CompromiseSrc = Join-Path $SourceDirectory "lib\compromise.min.js"
+$CompromiseDst = Join-Path $DistLibDirectory "compromise.min.js"
+Copy-Item -Path $CompromiseSrc -Destination $CompromiseDst -Force
+Write-Host-Colored "Ensured compromise.min.js is present in dist/lib." "Green"
+
 # Copy minified files from build folder
 Write-Host-Colored "Copying minified JavaScript files..." "Green"
 Copy-Item -Path (Join-Path $BuildDirectory "*.js") -Destination $DistDirectory
+# Copy preview.js for content-based grouping preview
+Copy-Item -Path (Join-Path $SourceDirectory "preview.js") -Destination $DistDirectory
 
 # 5. Final Message
 Write-Host-Colored "----------------------------------------" "White"
