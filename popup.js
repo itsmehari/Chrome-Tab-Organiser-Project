@@ -40,6 +40,13 @@ function handleAction(action, data = {}, callback = null) {
     } else if (response.message) {
       showToast(response.message);
     }
+    
+    // Handle the two-step organization for scattered tabs
+    if (action === 'organizeAll' && response.scatteredTabs && response.scatteredTabs.length > 0) {
+      if (confirm(`Organized main domains. Do you want to group the remaining ${response.scatteredTabs.length} scattered tabs?`)) {
+        handleAction('groupScatteredTabs', { tabIds: response.scatteredTabs });
+      }
+    }
 
     fetchAndDisplayStats();
     fetchAndDisplayDomains();

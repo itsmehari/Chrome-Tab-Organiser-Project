@@ -100,7 +100,6 @@ async function groupTabsInChunks(tabs, domain) {
 // Organize all tabs by domain using Tab Groups API
 async function organizeTabsByDomain() {
   try {
-    // First, find and ungroup any existing tab groups to allow for re-organization.
     const allTabsBefore = await chrome.tabs.query({});
     const groupedTabIds = allTabsBefore
       .filter(tab => tab.groupId !== undefined && tab.groupId !== -1)
@@ -110,19 +109,62 @@ async function organizeTabsByDomain() {
       await chrome.tabs.ungroup(groupedTabIds);
     }
     
-    // Now, query for all tabs again. They will all be ungrouped.
     const allTabsAfter = await chrome.tabs.query({});
-    const tabsToOrganize = allTabsAfter.filter(tab => tab.url); // Filter out tabs without URLs
+    const tabsByDomain = {};
 
-    if (tabsToOrganize.length === 0) {
-      return { success: true, message: "No tabs to organize." };
+    for (const tab of allTabsAfter) {
+      if (tab.url) {
+        const domain = getBaseDomain(tab.url);
+        if (domain) {
+          if (!tabsByDomain[domain]) {
+            tabsByDomain[domain] = [];
+          }
+          tabsByDomain[domain].push(tab);
+        }
+      }
     }
 
-    const createdGroupIds = await groupTabsInChunks(tabsToOrganize, "Organized Tabs");
+    const allCreatedGroupIds = [];
+    const scatteredTabs = [];
+    let domainsOrganized = 0;
+
+    for (const domain in tabsByDomain) {
+      const tabsToGroup = tabsByDomain[domain];
+      if (tabsToGroup.length > 5) {
+        const createdGroupIds = await groupTabsInChunks(tabsToGroup, domain);
+        allCreatedGroupIds.push(...createdGroupIds);
+        domainsOrganized++;
+      } else {
+        scatteredTabs.push(...tabsToGroup);
+      }
+    }
     
-    return { success: true, message: `Organized ${tabsToOrganize.length} tabs into new windows.`, groupIds: createdGroupIds };
+    // Return scattered tabs for the user to decide on
+    return { 
+      success: true, 
+      message: `Organized tabs for ${domainsOrganized} domain(s).`, 
+      groupIds: allCreatedGroupIds,
+      scatteredTabs: scatteredTabs.map(t => t.id) 
+    };
   } catch (err) {
     console.error('Error organizing all tabs:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+// Function to group a specific list of tabs, used for scattered tabs.
+async function groupSpecificTabs(tabIds) {
+  try {
+    if (!tabIds || tabIds.length === 0) {
+      return { success: true, message: "No tabs to group." };
+    }
+    const tabs = await chrome.tabs.query({});
+    const tabsToGroup = tabs.filter(t => tabIds.includes(t.id));
+    const createdGroupIds = await groupTabsInChunks(tabsToGroup, "Scattered Tabs");
+    
+    return { success: true, message: `Grouped ${tabsToGroup.length} scattered tabs.`, groupIds: createdGroupIds };
+  } catch (err) {
+    console.error('Error grouping specific tabs:', err);
     return { success: false, error: err.message };
   }
 }
@@ -512,6 +554,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         case 'organizeAll':
           response = await organizeTabsByDomain();
           if (response.success && response.groupIds) {
+            saveUndoState(response.groupIds);
+          }
+          break;
+        case 'groupScatteredTabs':
+          response = await groupSpecificTabs(request.tabIds);
+           if (response.success && response.groupIds) {
             saveUndoState(response.groupIds);
           }
           break;
