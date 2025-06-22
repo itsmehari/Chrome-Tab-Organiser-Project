@@ -100,18 +100,27 @@ async function groupTabsInChunks(tabs, domain) {
 // Organize all tabs by domain using Tab Groups API
 async function organizeTabsByDomain() {
   try {
-    const allTabs = await chrome.tabs.query({});
-    
-    // Collect all ungrouped tabs from all windows.
-    const ungroupedTabs = allTabs.filter(tab => tab.url && (tab.groupId === undefined || tab.groupId === -1));
+    // First, find and ungroup any existing tab groups to allow for re-organization.
+    const allTabsBefore = await chrome.tabs.query({});
+    const groupedTabIds = allTabsBefore
+      .filter(tab => tab.groupId !== undefined && tab.groupId !== -1)
+      .map(tab => tab.id);
 
-    if (ungroupedTabs.length === 0) {
+    if (groupedTabIds.length > 0) {
+      await chrome.tabs.ungroup(groupedTabIds);
+    }
+    
+    // Now, query for all tabs again. They will all be ungrouped.
+    const allTabsAfter = await chrome.tabs.query({});
+    const tabsToOrganize = allTabsAfter.filter(tab => tab.url); // Filter out tabs without URLs
+
+    if (tabsToOrganize.length === 0) {
       return { success: true, message: "No tabs to organize." };
     }
 
-    const createdGroupIds = await groupTabsInChunks(ungroupedTabs, "Organized Tabs");
+    const createdGroupIds = await groupTabsInChunks(tabsToOrganize, "Organized Tabs");
     
-    return { success: true, message: `Organized ${ungroupedTabs.length} tabs into new windows.`, groupIds: createdGroupIds };
+    return { success: true, message: `Organized ${tabsToOrganize.length} tabs into new windows.`, groupIds: createdGroupIds };
   } catch (err) {
     console.error('Error organizing all tabs:', err);
     return { success: false, error: err.message };
