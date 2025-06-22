@@ -65,7 +65,7 @@ async function analyzeTabs(limit = null) {
 async function groupTabsInChunks(tabs, domain) {
     const tabsToGroupIds = tabs.map(t => t.id);
 
-    const CHUNK_SIZE = 25;
+    const CHUNK_SIZE = tabs.length > 250 ? 50 : 25;
     const chunks = [];
     for (let i = 0; i < tabsToGroupIds.length; i += CHUNK_SIZE) {
       chunks.push(tabsToGroupIds.slice(i, i + CHUNK_SIZE));
@@ -87,7 +87,7 @@ async function groupTabsInChunks(tabs, domain) {
       }
 
       // Now that all tabs are in the new window, group them.
-      const group = await chrome.tabs.group({ tabIds: chunk, windowId: newWindow.id });
+      const group = await chrome.tabs.group({ tabIds: chunk });
       const groupTitle = chunks.length > 1 ? `${domain} (Part ${i + 1})` : domain;
       await chrome.tabGroups.update(group, { title: groupTitle });
       createdGroupIds.push(group);
@@ -100,39 +100,19 @@ async function groupTabsInChunks(tabs, domain) {
 async function organizeTabsByDomain() {
   try {
     const allTabs = await chrome.tabs.query({});
-    const tabsByDomain = {};
-
-    // Group all tabs by domain, excluding those already in a group
-    for (const tab of allTabs) {
-      if (tab.url && (tab.groupId === undefined || tab.groupId === -1)) {
-        const domain = getBaseDomain(tab.url);
-        if (domain) {
-          if (!tabsByDomain[domain]) {
-            tabsByDomain[domain] = [];
-          }
-          tabsByDomain[domain].push(tab);
-        }
-      }
-    }
-
-    const allCreatedGroupIds = [];
-    let domainsOrganized = 0;
-    for (const domain in tabsByDomain) {
-      const tabsToGroup = tabsByDomain[domain];
-      if (tabsToGroup.length > 5) {
-        const createdGroupIds = await groupTabsInChunks(tabsToGroup, domain);
-        allCreatedGroupIds.push(...createdGroupIds);
-        domainsOrganized++;
-      }
-    }
-
-    if (domainsOrganized === 0) {
-      return { success: true, message: "No domains found with enough tabs to organize." };
-    }
     
-    return { success: true, message: `Organized tabs for ${domainsOrganized} domain(s).`, groupIds: allCreatedGroupIds };
+    // Collect all ungrouped tabs from all windows.
+    const ungroupedTabs = allTabs.filter(tab => tab.url && (tab.groupId === undefined || tab.groupId === -1));
+
+    if (ungroupedTabs.length === 0) {
+      return { success: true, message: "No tabs to organize." };
+    }
+
+    const createdGroupIds = await groupTabsInChunks(ungroupedTabs, "Organized Tabs");
+    
+    return { success: true, message: `Organized ${ungroupedTabs.length} tabs into new windows.`, groupIds: createdGroupIds };
   } catch (err) {
-    console.error('Error organizing all tabs by domain:', err);
+    console.error('Error organizing all tabs:', err);
     return { success: false, error: err.message };
   }
 }
@@ -461,28 +441,34 @@ async function deleteSavedGroup(timestamp) {
 // --- Offscreen Document and Clipboard ---
 
 // A global promise to avoid race conditions
-let creatingOffscreenDocument;
+let creatingOffscreenDocumentPromise;
 
 async function setupOffscreenDocument(path) {
-  // Check if we have an existing offscreen document.
   if (await chrome.offscreen.hasDocument?.()) {
     return;
   }
 
-  // If a creation process is already underway, wait for it to complete.
-  if (creatingOffscreenDocument) {
-    await creatingOffscreenDocument;
+  if (creatingOffscreenDocumentPromise) {
+    await creatingOffscreenDocumentPromise;
     return;
   }
 
-  creatingOffscreenDocument = chrome.offscreen.createDocument({
+  const promise = chrome.offscreen.createDocument({
     url: path,
     reasons: ['CLIPBOARD'],
     justification: 'To copy text to the clipboard',
   });
 
-  await creatingOffscreenDocument;
-  creatingOffscreenDocument = null;
+  creatingOffscreenDocumentPromise = promise;
+
+  try {
+    await promise;
+  } finally {
+    // If the promise we were waiting for is the one we created, reset it.
+    if (creatingOffscreenDocumentPromise === promise) {
+        creatingOffscreenDocumentPromise = null;
+    }
+  }
 }
 
 async function copyUrlsByDomain(domain) {

@@ -10,9 +10,9 @@ The extension is built on Manifest V3 and is composed of the following main comp
 - **`background.js` (Service Worker)**: This is the brain of the extension. It runs in the background and handles all core logic.
   - **Message Listener (`chrome.runtime.onMessage`)**: A central router that listens for commands from the popup UI.
   - **Core Logic**: Contains functions for analyzing, grouping, and managing tabs. It uses the `chrome.tabs` and `chrome.tabGroups` APIs for all organization tasks.
-  - **`groupTabsInChunks(tabs, domain)`**: A reusable function that takes a list of tabs and a domain name. It chunks the tabs into groups of 25 and creates a new browser window to contain each group. This is the core of the organization logic.
+  - **`groupTabsInChunks(tabs, domain)`**: A reusable function that takes a list of tabs and a domain name. It chunks the tabs into groups and creates a new browser window to contain each group. The chunk size is dynamically set to 50 if the total tab count is over 250, otherwise it defaults to 25. This is the core of the organization logic.
   - **`organizeTabsForDomain(domain)`**: The function backing the per-domain "Organize" button. It finds all ungrouped tabs for a given domain across all windows, and if they exceed a threshold (5), it passes them to `groupTabsInChunks`.
-  - **`organizeTabsByDomain()`**: The function for the "Organize All" button. It finds all ungrouped tabs across all windows, maps them by domain, and for each domain with more than 5 tabs, passes them to `groupTabsInChunks`.
+  - **`organizeTabsByDomain()`**: The function for the "Organize All" button. It finds all ungrouped tabs across all windows and passes them to `groupTabsInChunks`.
   - **State Management**: Manages settings and the undo/redo stacks in memory, with persistence to `chrome.storage.local`.
   - **`getComprehensiveStats()`**: Calculates a wide range of statistics, including total tabs, windows, groups, audible tabs, and duplicates.
   - **`copyUrlsByDomain(domain)`**: Copies all URLs from a given domain to the clipboard. This requires creating a temporary offscreen document (`offscreen.html`) to access the `navigator.clipboard` API, as direct access is not allowed from service workers.
@@ -35,9 +35,9 @@ The script also manages undo/redo stacks (`undoStack`, `redoStack`) in `chrome.s
   1.  The user clicks either "Organize" for a domain or the "Organize All Tabs" button.
   2.  A message is sent to `background.js` (`organizeByDomain` or `organizeAll`).
   3.  The relevant function (`organizeTabsForDomain` or `organizeTabsByDomain`) queries all tabs across all windows, filtering out any that are already in a group.
-  4.  A threshold check is performed (must be > 5 tabs to proceed).
+  4.  The `organizeTabsByDomain` function collects all ungrouped tabs, while `organizeTabsForDomain` filters them by the specified domain.
   5.  The qualified tabs are passed to the `groupTabsInChunks` helper function.
-  6.  This function chunks the tabs into groups of 25 and creates a new, separate browser window for each chunk, preventing clutter.
+  6.  This function chunks the tabs into groups (25 or 50 depending on total count) and creates a new, separate browser window for each chunk, preventing clutter.
 - **Statistics Dashboard**: On popup open, `popup.js` sends `getComprehensiveStats` to the background. `background.js` calculates stats (totals, duplicates, audible, etc.) and returns a data object. `popup.js` then renders this data in the UI grid and the Chart.js pie chart.
 - **Interactive Stats**: Clicking the "Audible Tabs" stat sends `focusAudibleTab`. The background script finds the relevant tab and uses `chrome.windows.update` and `chrome.tabs.update` to bring it into focus.
 - **Proactive Suggestions**: On popup open, `popup.js` sends `getGroupingSuggestions`. The background script analyzes ungrouped tabs and returns any domains with >5 tabs. The popup then renders these as actionable suggestions.

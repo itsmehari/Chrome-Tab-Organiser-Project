@@ -16,7 +16,7 @@ This is the default view. It provides tools to organize and understand your curr
 
 #### Main Actions
 
-- **Organize All Tabs**: Click this to automatically group all of your open tabs by their website domain (e.g., all `google.com` tabs will be grouped together).
+- **Organize All Tabs**: Click this to automatically group all of your open, ungrouped tabs. The extension will create new windows, each containing a group of tabs. If you have over 250 tabs, they will be organized into windows of 50; otherwise, they will be in windows of 25.
 - **Close Duplicate Tabs**: Instantly finds and closes any tabs that are duplicates, cleaning up your workspace with a single click.
 - **Undo/Redo**: Accidentally organized or closed a group? No problem. Use the Undo (`Undo`) and Redo (`Redo`) buttons to reverse or reapply your last action.
 
