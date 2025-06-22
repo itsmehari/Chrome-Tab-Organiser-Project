@@ -1,14 +1,17 @@
 {
   "manifest_version": 3,
-  "name": "Smart Tab Organiser",
-  "version": "1.0.0",
-  "description": "Organize, analyze, and manage your browser tabs by website. Save sessions, group tabs, and more!",
+  "name": "Smart Tab Organiser - CC",
+  "version": "1.0",
+  "description": "A powerful extension to automatically organize, manage, and analyze your browser tabs.",
   "permissions": [
     "tabs",
     "tabGroups",
     "storage",
     "offscreen",
     "scripting"
+  ],
+  "host_permissions": [
+    "<all_urls>"
   ],
   "background": {
     "service_worker": "background.js"
@@ -17,16 +20,21 @@
     "default_popup": "popup.html",
     "default_icon": {
       "16": "icons/icon16.jpeg",
-      "32": "icons/icon32.jpeg",
       "48": "icons/icon48.jpeg",
       "128": "icons/icon128.jpeg"
     }
   },
-  "options_page": "options.html",
   "icons": {
     "16": "icons/icon16.jpeg",
-    "32": "icons/icon32.jpeg",
     "48": "icons/icon48.jpeg",
     "128": "icons/icon128.jpeg"
-  }
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "web_accessible_resources": [{
+    "resources": ["preview.html"],
+    "matches": ["<all_urls>"]
+  }]
 } 

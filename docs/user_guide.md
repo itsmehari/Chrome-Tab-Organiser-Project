@@ -16,7 +16,10 @@ This is the default view. It provides tools to organize and understand your curr
 
 #### Main Actions
 
-- **Organize All Tabs**: Click this to automatically group all of your open, ungrouped tabs. The extension will create new windows, each containing a group of tabs. If you have over 250 tabs, they will be organized into windows of 50; otherwise, they will be in windows of 25.
+- **Suggest Groups by Content**: Click this to analyze the content of your tabs and get smart grouping suggestions.
+- **Organize All Tabs**: Click this to begin a smart, two-step organization process.
+  1.  First, the extension will find all websites where you have many tabs open and automatically group them by domain.
+  2.  Then, if there are any "scattered" tabs left over, a prompt will ask if you want to group them as well. You can choose to group them or leave them as they are.
 - **Close Duplicate Tabs**: Instantly finds and closes any tabs that are duplicates, cleaning up your workspace with a single click.
 - **Undo/Redo**: Accidentally organized or closed a group? No problem. Use the Undo (`Undo`) and Redo (`Redo`) buttons to reverse or reapply your last action.
 
@@ -57,5 +60,5 @@ You can access the main settings page by clicking the **"⚙️"** icon in the p
 On the options page, you can:
 
 - **Manage Sessions**: Save or restore your entire browser state (all windows and tabs).
-- **Configure Defaults**: Set preferences for auto-organization and default group colors.
+- **Configure Defaults**: Set preferences for auto-organization and default group colors. You can also set a custom "chunk size" to control how many tabs are placed in each new window during organization.
 - **Manage Data**: Reset all settings or clear your saved sessions and groups.

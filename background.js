@@ -545,6 +545,69 @@ async function copyUrlsByDomain(domain) {
   }
 }
 
+// --- Content Analysis ---
+async function analyzeTabContent(tabId) {
+    try {
+        const results = await chrome.scripting.executeScript({
+            target: { tabId: tabId },
+            func: () => document.body.innerText,
+        });
+        // Ensure we have a result and it's a string.
+        if (results && results[0] && typeof results[0].result === 'string') {
+            return results[0].result;
+        }
+    } catch (e) {
+        // This can happen on special pages like chrome:// urls, so we'll just ignore it.
+    }
+    return '';
+}
+
+function getKeywords(text) {
+    const stopWords = new Set(['and','the','is','in','it','of','a','for','on','with','to','i','you','he','she','we','they','what','where','when','why','how','an','or']);
+    const words = text.toLowerCase().match(/\b\w{4,}\b/g) || []; // Words with 4+ letters
+    const freq = {};
+    words.forEach(word => {
+        if (!stopWords.has(word)) {
+            freq[word] = (freq[word] || 0) + 1;
+        }
+    });
+    // Return top 5 keywords
+    return Object.keys(freq).sort((a,b) => freq[b] - freq[a]).slice(0, 5);
+}
+
+async function suggestGroupsByContent() {
+    const tabs = await chrome.tabs.query({ url: ["http://*/*", "https://*/*"] });
+    const tabContents = await Promise.all(tabs.map(async tab => ({
+        id: tab.id,
+        title: tab.title,
+        url: tab.url,
+        keywords: getKeywords(await analyzeTabContent(tab.id)),
+    })));
+
+    const keywordMap = {};
+    tabContents.forEach(tab => {
+        tab.keywords.forEach(keyword => {
+            if (!keywordMap[keyword]) keywordMap[keyword] = [];
+            keywordMap[keyword].push(tab);
+        });
+    });
+
+    const suggestions = [];
+    Object.entries(keywordMap).forEach(([keyword, tabsInMap]) => {
+        if (tabsInMap.length > 2) { // Only suggest groups for 3+ tabs
+             // Avoid creating duplicate groups
+            if (!suggestions.some(s => s.tabs.some(t => t.id === tabsInMap[0].id))) {
+                suggestions.push({ name: `Topic: ${keyword}`, tabs: tabsInMap });
+            }
+        }
+    });
+    
+    await chrome.storage.local.set({ groupSuggestions: suggestions });
+    await chrome.tabs.create({ url: 'preview.html' });
+
+    return { success: true };
+}
+
 // --- Main Action Handler ---
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   (async () => {
@@ -611,6 +674,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         case 'deleteSavedGroup':
           response = await deleteSavedGroup(request.timestamp);
           break;
+        case 'suggestByContent':
+            response = await suggestGroupsByContent();
+            break;
         default:
           throw new Error(`Unknown action: ${request.action}`);
       }

@@ -256,44 +256,25 @@ document.addEventListener('DOMContentLoaded', () => {
   const savedGroupsContent = document.getElementById('saved-groups-content');
   const analyzerBtn = document.getElementById('show-analyzer-btn');
   const savedBtn = document.getElementById('show-saved-btn');
+  const organizeAllBtn = document.getElementById('organize-all-btn');
+  const closeDuplicatesBtn = document.getElementById('close-duplicates-btn');
+  const undoBtn = document.getElementById('undo-btn');
+  const redoBtn = document.getElementById('redo-btn');
+  const suggestGroupsBtn = document.getElementById('suggest-groups-btn');
 
-  if (analyzerBtn) {
-    analyzerBtn.addEventListener('click', () => {
-      if (mainContent) mainContent.style.display = 'block';
-      if (savedGroupsContent) savedGroupsContent.style.display = 'none';
-      analyzerBtn.classList.add('active');
-      savedBtn.classList.remove('active');
-    });
-  }
-
-  if (savedBtn) {
-    savedBtn.addEventListener('click', () => {
-      if (mainContent) mainContent.style.display = 'none';
-      if (savedGroupsContent) savedGroupsContent.style.display = 'block';
-      analyzerBtn.classList.remove('active');
-      savedBtn.classList.add('active');
-      fetchAndDisplaySavedGroups(); // Fetch and show saved groups
-    });
-  }
-
-  // Onboarding and settings listeners
-  const darkToggle = document.getElementById('dark-toggle');
-  if(darkToggle) darkToggle.addEventListener('click', toggleTheme);
+  // Event listeners
+  document.getElementById('dark-toggle').addEventListener('click', toggleTheme);
   
   const settingsLink = document.getElementById('settings-link');
   if(settingsLink) settingsLink.addEventListener('click', () => chrome.runtime.openOptionsPage());
   
   // Main action listeners
-  const organizeAllBtn = document.getElementById('organize-all-btn');
   if(organizeAllBtn) organizeAllBtn.addEventListener('click', () => handleAction('organizeAll'));
   
-  const closeDuplicatesBtn = document.getElementById('close-duplicates-btn');
   if(closeDuplicatesBtn) closeDuplicatesBtn.addEventListener('click', () => handleAction('closeDuplicates'));
 
-  const undoBtn = document.getElementById('undo-btn');
   if(undoBtn) undoBtn.addEventListener('click', () => handleAction('undo'));
 
-  const redoBtn = document.getElementById('redo-btn');
   if(redoBtn) redoBtn.addEventListener('click', () => handleAction('redo'));
   
   // Delegated event listeners for dynamic content
@@ -321,5 +302,27 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
       handleAction('focusAudibleTab');
     }
+  });
+
+  // Handle tab switching
+  analyzerBtn.addEventListener('click', () => {
+    mainContent.style.display = 'block';
+    if (savedGroupsContent) savedGroupsContent.style.display = 'none';
+    analyzerBtn.classList.add('active');
+    savedBtn.classList.remove('active');
+  });
+
+  savedBtn.addEventListener('click', () => {
+    mainContent.style.display = 'none';
+    if (savedGroupsContent) savedGroupsContent.style.display = 'block';
+    analyzerBtn.classList.remove('active');
+    savedBtn.classList.add('active');
+    fetchAndDisplaySavedGroups(); // Fetch and show saved groups
+  });
+
+  suggestGroupsBtn.addEventListener('click', () => handleAction('suggestByContent'));
+
+  document.getElementById('stats-container-grid').addEventListener('click', e => {
+    if(e.target.id === 'audible-tabs-link') handleAction('focusAudibleTab');
   });
 });
