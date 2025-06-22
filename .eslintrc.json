@@ -5,7 +5,7 @@
     "webextensions": true
   },
   "extends": "eslint:recommended",
-  "ignorePatterns": ["lib/**/*.js"],
+  "ignorePatterns": ["lib/**/*.js", "dist/**/*.js"],
   "parserOptions": {
     "ecmaVersion": "latest"
   },
