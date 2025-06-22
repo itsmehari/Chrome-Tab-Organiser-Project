@@ -18,6 +18,9 @@ This checklist will track the development progress.
 
 ### Completed Features & Fixes
 
+- [x] **Bug: Fix Content Security Policy error.** Replaced CDN links with local library files (`Chart.js`, `Shepherd.js`) to comply with Manifest V3 security requirements.
+- [x] **Bug: Fix incorrect ungrouped tab detection.** The logic now correctly identifies tabs that are not part of any group, allowing the "Organize" feature to work as expected.
+- [x] **Feature: Sort Domain Analysis list.** The list of domains in the popup is now sorted by the number of open tabs in descending order.
 - [x] **Logic: Handle large tab counts gracefully.** The "Organize" and "Organize All" functions now handle large numbers of tabs by creating new windows when a group exceeds 25 tabs.
 - [x] **Bug: Fix missing tab count in Domain Analysis view.**
 - [x] **UI: Improve popup action button layout.**

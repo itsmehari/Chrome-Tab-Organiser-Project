@@ -24,9 +24,10 @@ The extension is built on Manifest V3 and is composed of the following main comp
 The script also manages undo/redo stacks (`undoStack`, `redoStack`) in `chrome.storage.local` to allow users to revert or reapply organizational changes.
 
 - **`popup.html` / `popup.js`**: This is the main user interface.
-  - **UI (`popup.html`)**: Defines the structure of the popup, which is organized into two main tabs: "Analyzer" and "Saved". It contains the statistics dashboard, action buttons, and domain analysis lists. It also includes CDN links for `Chart.js` for data visualization and `Shepherd.js` for the interactive tour.
+  - **UI (`popup.html`)**: Defines the structure of the popup, which is organized into two main tabs: "Analyzer" and "Saved". It contains the statistics dashboard, action buttons, and domain analysis lists. It references local copies of `Chart.js` and `Shepherd.js` from a local `lib/` folder to comply with security policies.
   - **Logic (`popup.js`)**: Manages the tab-switching logic between the "Analyzer" and "Saved" views. It sends messages to the background script to trigger actions and receives data back to render the UI for the active view. It also contains the logic for the Shepherd.js interactive tour.
 - **`options.html` / `options.js`**: Provides a settings page for users to manage saved sessions and configure extension settings.
+- **`lib/`**: A directory containing local copies of third-party libraries like `Chart.js` and `Shepherd.js` to avoid external script loading.
 
 ## 2. Key Feature Workflows
 
@@ -49,7 +50,7 @@ The project is configured for a professional development workflow.
 - **Dependency Management**: `package.json` manages development dependencies like ESLint and Terser.
 - **Code Quality**: ESLint (`.eslintrc.json`) is used to enforce a consistent code style. It can be run with `npm run lint`.
 - **Build Process**: A build step, run with `npm run build`, uses `Terser` to minify all JavaScript files for production, outputting them to a `/build` directory.
-- **Deployment**: The `create-deployment-package.ps1` script fully automates the creation of a production-ready package. It runs the linter, runs the build, and copies only the necessary, minified assets into a final `/dist` folder.
+- **Deployment**: The `create-deployment-package.ps1` script fully automates the creation of a production-ready package. It runs the linter, runs the build, and copies only the necessary, minified assets and the `lib/` folder into a final `/dist` folder.
 - **Exclusion**: The `.deployignore` file ensures that no source code, documentation, or development files are included in the final `/dist` package.
 - **Documentation**: All project documentation, including this file, a User Guide, a PRD, and a Testing Plan, is located in the `/docs` folder.
 
@@ -70,6 +71,6 @@ The project includes a streamlined build and deployment process automated via a 
 
 1.  **Linting**: `eslint .` is run to catch any code quality issues.
 2.  **Minification**: `terser` is used to minify all core JavaScript files (`background.js`, `popup.js`, `options.js`) into a `build/` directory.
-3.  **Packaging**: The script creates a clean `dist/` directory, copies the minified JS from `build/`, and adds all other necessary assets (`manifest.json`, HTML files, icons), excluding all development files.
+3.  **Packaging**: The script creates a clean `dist/` directory, copies the minified JS from `build/`, the third-party libraries from `lib/`, and adds all other necessary assets (`manifest.json`, HTML files, icons), excluding all development files.
 
 This process ensures the final uploaded package is small, optimized, and contains only production-ready code.

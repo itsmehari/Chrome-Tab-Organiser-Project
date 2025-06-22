@@ -16,5 +16,9 @@
   "devDependencies": {
     "eslint": "^8.57.0",
     "terser": "^5.31.1"
+  },
+  "dependencies": {
+    "chart.js": "^4.5.0",
+    "shepherd.js": "^14.5.0"
   }
 }

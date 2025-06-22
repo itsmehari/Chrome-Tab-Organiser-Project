@@ -7,7 +7,7 @@ let chartInstance = null;
  * @param {string} message - The message to display.
  */
 function showToast(message) {
-  const toast = document.getElementById('toast');
+const toast = document.getElementById('toast');
   if (!toast) return;
   toast.textContent = message;
   toast.classList.add('show');

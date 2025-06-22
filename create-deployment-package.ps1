@@ -54,17 +54,12 @@ New-Item -ItemType Directory -Force -Path $DistDirectory | Out-Null
 # Read ignore patterns
 $ignorePatterns = Get-Content $DeployIgnoreFile | Where-Object { $_ -and -not $_.StartsWith("#") }
 
-# Copy files, respecting .deployignore
+# Copy specific files and folders to dist
 Write-Host-Colored "Copying manifest, HTML, and icons..." "Green"
-Get-ChildItem -Path $SourceDirectory -Recurse -Exclude $ignorePatterns | ForEach-Object {
-    $destinationPath = $_.FullName.Replace($SourceDirectory, $DistDirectory)
-    if (-not (Test-Path (Split-Path $destinationPath -Parent))) {
-        New-Item -ItemType Directory -Force -Path (Split-Path $destinationPath -Parent) | Out-Null
-    }
-    if (-not $_.PSIsContainer) {
-        Copy-Item $_.FullName -Destination $destinationPath
-    }
-}
+Copy-Item -Path (Join-Path $SourceDirectory "manifest.json") -Destination $DistDirectory
+Copy-Item -Path (Join-Path $SourceDirectory "*.html") -Destination $DistDirectory
+Copy-Item -Path (Join-Path $SourceDirectory "icons") -Destination $DistDirectory -Recurse
+Copy-Item -Path (Join-Path $SourceDirectory "lib") -Destination $DistDirectory -Recurse
 
 # Copy minified files from build folder
 Write-Host-Colored "Copying minified JavaScript files..." "Green"
