@@ -458,29 +458,53 @@ async function deleteSavedGroup(timestamp) {
   return { message: 'Group deleted successfully.' };
 }
 
-/**
- * Copies all URLs from a specific domain to the clipboard.
- * @param {string} domain The domain to copy URLs from.
- * @returns {Promise<{message: string}>} A success message.
- */
+// --- Offscreen Document and Clipboard ---
+
+// A global promise to avoid race conditions
+let creatingOffscreenDocument;
+
+async function setupOffscreenDocument(path) {
+  // Check if we have an existing offscreen document.
+  if (await chrome.offscreen.hasDocument?.()) {
+    return;
+  }
+
+  // If a creation process is already underway, wait for it to complete.
+  if (creatingOffscreenDocument) {
+    await creatingOffscreenDocument;
+    return;
+  }
+
+  creatingOffscreenDocument = chrome.offscreen.createDocument({
+    url: path,
+    reasons: ['CLIPBOARD'],
+    justification: 'To copy text to the clipboard',
+  });
+
+  await creatingOffscreenDocument;
+  creatingOffscreenDocument = null;
+}
+
 async function copyUrlsByDomain(domain) {
-  const tabs = await chrome.tabs.query({ url: `*://${domain}/*` });
-  if (tabs.length > 0) {
-    const urls = tabs.map(t => t.url).join('\n');
-    await chrome.offscreen.createDocument({
-      url: 'offscreen.html',
-      reasons: ['CLIPBOARD'],
-      justification: 'Copying URLs to clipboard',
-    });
+  try {
+    const tabs = await chrome.tabs.query({ url: `*://${domain}/*` });
+    const urls = tabs.map(t => t.url);
+    const textToCopy = urls.join('\n');
+
+    await setupOffscreenDocument('offscreen.html');
+
+    // Send message to the offscreen document to perform the copy
     await chrome.runtime.sendMessage({
       action: 'copyToClipboard',
       target: 'offscreen',
-      data: urls,
+      data: textToCopy,
     });
-    await chrome.offscreen.closeDocument();
-    return { message: `Copied ${tabs.length} URL(s) to clipboard.` };
+
+    return { success: true, message: `Copied ${urls.length} URLs for ${domain}.` };
+  } catch (err) {
+    console.error('Error copying URLs:', err);
+    return { success: false, error: err.message };
   }
-  return { message: 'No URLs to copy.' };
 }
 
 // --- Main Action Handler ---
