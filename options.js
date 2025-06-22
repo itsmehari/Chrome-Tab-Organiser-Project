@@ -7,6 +7,7 @@ const sessionList = document.getElementById('session-list');
 const saveSettingsBtn = document.getElementById('save-settings-btn');
 const autoOrganizeToggle = document.getElementById('auto-organize-toggle');
 const groupColorSelect = document.getElementById('group-color-select');
+const chunkSizeInput = document.getElementById('chunk-size-input');
 const shortcutsBtn = document.getElementById('shortcuts-btn');
 const resetSettingsBtn = document.getElementById('reset-settings-btn');
 const clearDataBtn = document.getElementById('clear-data-btn');
@@ -50,6 +51,7 @@ function loadSettings() {
     if (taborg_settings) {
       autoOrganizeToggle.value = taborg_settings.autoOrganize || 'false';
       groupColorSelect.value = taborg_settings.groupColor || 'grey';
+      chunkSizeInput.value = taborg_settings.chunkSize || '';
     }
   });
 }
@@ -132,6 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const settings = {
       autoOrganize: autoOrganizeToggle.value,
       groupColor: groupColorSelect.value,
+      chunkSize: chunkSizeInput.value ? parseInt(chunkSizeInput.value, 10) : null,
     };
     chrome.storage.local.set({ 'taborg_settings': settings }, () => {
       alert('Settings saved!');

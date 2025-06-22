@@ -65,7 +65,8 @@ async function analyzeTabs(limit = null) {
 async function groupTabsInChunks(tabs, domain) {
     const tabsToGroupIds = tabs.map(t => t.id);
 
-    const CHUNK_SIZE = tabs.length > 250 ? 50 : 25;
+    // Use the user-defined chunk size if available, otherwise use dynamic logic.
+    const CHUNK_SIZE = taborgSettings.chunkSize || (tabs.length > 250 ? 50 : 25);
     const chunks = [];
     for (let i = 0; i < tabsToGroupIds.length; i += CHUNK_SIZE) {
       chunks.push(tabsToGroupIds.slice(i, i + CHUNK_SIZE));
@@ -175,7 +176,7 @@ function safeStorageGet(keys, callback) {
 // Load settings from storage
 function loadSettings() {
   safeStorageGet(['taborg_settings'], (result) => {
-    taborgSettings = result.taborg_settings || {};
+    taborgSettings = result.taborg_settings || { chunkSize: null };
   });
 }
 
