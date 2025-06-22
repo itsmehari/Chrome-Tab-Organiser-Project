@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Content-Based Grouping Suggestions</title>
+    <link rel="stylesheet" href="popup.css">
+    <style>
+        body {
+            background: #f7fafc;
+            font-family: 'Segoe UI', 'Poppins', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+        header {
+            margin-bottom: 2rem;
+        }
+        h1 {
+            font-size: 2.2rem;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+        }
+        .actions-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            align-items: center;
+        }
+        .search-input {
+            flex: 1;
+            padding: 0.7rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            font-size: 1rem;
+            background: #fff;
+        }
+        .btn-main {
+            background: linear-gradient(90deg, #38b2ac 0%, #4299e1 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.7rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(56,178,172,0.08);
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+        .btn-main:hover {
+            background: linear-gradient(90deg, #4299e1 0%, #38b2ac 100%);
+            box-shadow: 0 4px 16px rgba(66,153,225,0.12);
+        }
+        .suggestion-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+        .group-card {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(44,62,80,0.07);
+            padding: 1.5rem 1.2rem 1.2rem 1.2rem;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.15s, box-shadow 0.15s;
+            border: 1px solid #e2e8f0;
+        }
+        .group-card:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 8px 32px rgba(44,62,80,0.13);
+        }
+        .group-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .group-icon {
+            font-size: 1.5rem;
+            margin-right: 0.7rem;
+        }
+        .group-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2d3748;
+            flex: 1;
+        }
+        .create-group-btn {
+            background: #38b2ac;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            margin-left: 0.5rem;
+            transition: background 0.2s;
+        }
+        .create-group-btn:hover {
+            background: #4299e1;
+        }
+        .tab-list {
+            margin-top: 0.5rem;
+        }
+        .tab-item {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.4rem 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .tab-item:last-child {
+            border-bottom: none;
+        }
+        .tab-favicon {
+            width: 18px;
+            height: 18px;
+            border-radius: 3px;
+            background: #e2e8f0;
+        }
+        .tab-title {
+            font-size: 1rem;
+            color: #374151;
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .tab-url {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-left: 0.5rem;
+        }
+        @media (max-width: 600px) {
+            .container { padding: 0.5rem; }
+            .suggestion-grid { gap: 1rem; }
+            .group-card { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Content-Based Grouping Suggestions</h1>
+            <p>Review the suggestions below and create the groups you find useful.</p>
+        </header>
+        <div class="actions-bar">
+            <input type="text" id="search-input" class="search-input" placeholder="Search groups or tabs...">
+            <button id="create-all-btn" class="btn-main">Create All Groups</button>
+        </div>
+        <div id="suggestion-grid" class="suggestion-grid">
+            <!-- Group cards will be rendered here -->
+        </div>
+    </div>
+    <script src="lib/compromise.min.js"></script>
+    <script src="preview.js"></script>
+</body>
+</html> 
