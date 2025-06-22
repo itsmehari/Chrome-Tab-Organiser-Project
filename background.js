@@ -104,7 +104,7 @@ async function organizeTabsByDomain() {
 
     // Group all tabs by domain, excluding those already in a group
     for (const tab of allTabs) {
-      if (tab.url && !tab.groupId) { 
+      if (tab.url && (tab.groupId === undefined || tab.groupId === -1)) {
         const domain = getBaseDomain(tab.url);
         if (domain) {
           if (!tabsByDomain[domain]) {
@@ -141,7 +141,7 @@ async function organizeTabsByDomain() {
 async function organizeTabsForDomain(domain) {
   try {
     const tabs = await chrome.tabs.query({ url: `*://${domain}/*` });
-    const ungroupedTabs = tabs.filter(t => !t.groupId);
+    const ungroupedTabs = tabs.filter(t => t.groupId === undefined || t.groupId === -1);
 
     if (ungroupedTabs.length <= 5) {
       return { success: true, message: `Only ${ungroupedTabs.length} ungrouped tabs found for ${domain}. A minimum of 6 is required.` };
@@ -553,4 +553,4 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
   })();
   return true; // Indicates asynchronous response
-});
+}); 
