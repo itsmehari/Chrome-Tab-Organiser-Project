@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "Smart Tab Organiser",
+  "version": "1.0.0",
+  "description": "Organize, analyze, and manage your browser tabs by website. Save sessions, group tabs, and more!",
+  "permissions": [
+    "tabs",
+    "tabGroups",
+    "storage",
+    "offscreen",
+    "scripting"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.jpeg",
+      "32": "icons/icon32.jpeg",
+      "48": "icons/icon48.jpeg",
+      "128": "icons/icon128.jpeg"
+    }
+  },
+  "options_page": "options.html",
+  "icons": {
+    "16": "icons/icon16.jpeg",
+    "32": "icons/icon32.jpeg",
+    "48": "icons/icon48.jpeg",
+    "128": "icons/icon128.jpeg"
+  }
+} 

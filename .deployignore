@@ -1,0 +1,20 @@
+# Files and folders to ignore during deployment packaging.
+
+# Documentation
+docs/
+CONTEXT.md
+
+# Deployment artifacts & scripts
+dist
+build/
+*.zip
+.deployignore
+create-deployment-package.ps1
+.eslintrc.json
+package.json
+package-lock.json
+node_modules/
+
+# Git history (if present)
+.git
+.gitignore 

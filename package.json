@@ -1,0 +1,20 @@
+{
+  "name": "smart-tab-organiser-cc",
+  "version": "1.0.0",
+  "description": "Chrome Extension for organizing tabs.",
+  "main": "background.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "lint": "eslint . --ext .js",
+    "build": "terser background.js -o build/background.js -c -m && terser popup.js -o build/popup.js -c -m && terser options.js -o build/options.js -c -m"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "terser": "^5.31.1"
+  }
+}

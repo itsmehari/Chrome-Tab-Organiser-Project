@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Tab Organizer Settings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #ff0000;
+      --primary-dark: #cc0000;
+      --bg: #f4f5f7;
+      --text: #222;
+      --card-bg: #fff;
+      --border: #e0e0e0;
+      --input-bg: #f9f9f9;
+    }
+    body {
+      font-family: 'Poppins', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 2rem;
+      display: flex;
+      justify-content: center;
+    }
+    .container {
+      width: 100%;
+      max-width: 800px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    header h1 {
+      font-size: 2.5rem;
+      font-weight: 600;
+      margin: 0;
+    }
+    header p {
+      font-size: 1.1rem;
+      color: #666;
+    }
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      padding: 2rem;
+      margin-bottom: 2rem;
+      border: 1px solid var(--border);
+    }
+    .card h2 {
+      margin-top: 0;
+      font-size: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--input-bg);
+      font-family: 'Poppins', sans-serif;
+      font-size: 1rem;
+    }
+    .btn {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s;
+      font-weight: 600;
+    }
+    .btn:hover {
+      background: var(--primary-dark);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .btn-secondary {
+      background: #e0e6f6;
+      color: #1a3cff;
+    }
+    .btn-secondary:hover {
+      background: #d0dbf6;
+    }
+    .danger-zone {
+      border: 2px solid #e53e3e;
+      padding: 1.5rem;
+      border-radius: 12px;
+    }
+    .danger-zone h3 {
+      color: #e53e3e;
+      margin-top: 0;
+    }
+    .danger-zone .btn {
+      background: #e53e3e;
+    }
+    .danger-zone .btn:hover {
+      background: #c53030;
+    }
+    #session-list {
+      margin-top: 1rem;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .session-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem;
+      border-radius: 8px;
+      background: var(--input-bg);
+      margin-bottom: 0.5rem;
+    }
+    .session-item .btn {
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Smart Tab Organizer Settings</h1>
+      <p>Configure the extension to fit your workflow.</p>
+    </header>
+
+    <div class="card">
+      <h2>Session Management</h2>
+      <div class="form-group">
+        <label for="session-name">Save Current Session As:</label>
+        <input type="text" id="session-name" placeholder="e.g., 'Work Project - Monday'">
+      </div>
+      <button class="btn" id="save-session-btn">Save Session</button>
+      <div id="session-list">
+        <!-- Saved sessions will be populated here -->
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>General Settings</h2>
+      <div class="form-group">
+        <label for="auto-organize-toggle">Auto-Organize Tabs</label>
+        <select id="auto-organize-toggle">
+          <option value="false">Disabled</option>
+          <option value="true">Enabled</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="group-color-select">Default Group Color</label>
+        <select id="group-color-select">
+          <option value="grey">Grey</option>
+          <option value="blue">Blue</option>
+          <option value="red">Red</option>
+          <option value="yellow">Yellow</option>
+          <option value="green">Green</option>
+        </select>
+      </div>
+      <button class="btn" id="save-settings-btn">Save Settings</button>
+    </div>
+    
+    <div class="card">
+      <h2>Shortcuts</h2>
+      <p>To configure keyboard shortcuts, please visit the Chrome Extensions page.</p>
+      <button class="btn btn-secondary" id="shortcuts-btn">Manage Shortcuts</button>
+    </div>
+
+    <div class="card danger-zone">
+      <h3>Danger Zone</h3>
+      <div class="form-group">
+        <button class="btn" id="reset-settings-btn">Reset All Settings</button>
+        <p><small>This will reset all configuration to their defaults.</small></p>
+      </div>
+      <div class="form-group">
+        <button class="btn" id="clear-data-btn">Clear All Saved Data</button>
+        <p><small>This will permanently delete all saved sessions and groups.</small></p>
+      </div>
+    </div>
+  </div>
+  <script src="options.js"></script>
+</body>
+</html> 
