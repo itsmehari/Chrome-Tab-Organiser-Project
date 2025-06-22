@@ -51,6 +51,9 @@ async function analyzeTabs(limit = null) {
     if (limit !== null) {
       result = result.filter(item => item.tabCount > limit);
     }
+    
+    // Sort by tab count descending
+    result.sort((a, b) => b.tabCount - a.tabCount);
 
     return { success: true, data: result };
   } catch (err) {
