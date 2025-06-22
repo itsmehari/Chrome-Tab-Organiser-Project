@@ -2,7 +2,7 @@
 
 ## 1. Overview
 
-This document outlines the requirements and features for the Smart Tab Organiser Chrome Extension. The extension aims to help users manage their browser tabs effectively by providing tools for organizing, saving, and analyzing tab usage.
+Smart Tab Organiser is a Chrome extension that helps users manage browser tabs and sessions with advanced tools for organization, analytics, and productivity. A key feature is smart, content-based tab grouping using in-browser NLP (compromise), which complements session management, duplicate detection, and usage analytics.
 
 ## 2. Master Feature Checklist
 

@@ -34,7 +34,24 @@ All project documentation is centralized in the `/docs` folder and is excluded f
 
 # Smart Tab Organiser
 
-Smart Tab Organiser is a modern Chrome extension that helps users organize, analyze, and manage their browser tabs by website. It offers session management, tab grouping, undo/redo, color coding, onboarding, and a clean, accessible user interface.
+Smart Tab Organiser is a comprehensive Chrome extension for advanced tab and session management, analytics, and productivity.
+
+## Key Features
+
+- **Session Management:** Save, restore, and auto-save browser sessions (all windows/tabs).
+- **Tab Organization:** Organize tabs by domain, custom rules, or content.
+- **Duplicate Detection:** Find and close duplicate tabs.
+- **Usage Analytics:** Visualize tab usage, domains, and session stats.
+- **Guided Tour:** Interactive onboarding for new users.
+- **Settings:** Custom chunk size, group color, auto-organize, and more.
+
+## Content-Based Tab Grouping (NLP)
+
+- Uses the compromise NLP library (browser UMD build) for all analysis, running fully client-side for privacy.
+- Analyzes tab titles, content, and metadata to extract topics/entities.
+- Suggests semantic groupings based on actual subject matter, not just domain.
+- UI allows users to preview, edit, and apply suggested groups.
+- Complements other features for a holistic tab management experience.
 
 ## Features
 

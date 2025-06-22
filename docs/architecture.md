@@ -1,3 +1,26 @@
+# Smart Tab Organiser: Architecture Overview
+
+Below is an interactive flowchart showing the main user flow and features of the extension, including content-based grouping, session management, analytics, and duplicate detection:
+
+```mermaid
+flowchart TD
+    A["User Opens Extension"] --> B{"Choose Action"}
+    B -->|"Organize by Domain"| C["Tabs Grouped by Website"]
+    B -->|"Suggest Groups by Content"| D["Analyze Tab Titles/Content"]
+    D --> E["Extract Topics/Entities (NLP)"]
+    E --> F["Suggest Semantic Groups"]
+    F --> G["User Reviews/Edits Groups"]
+    G --> H["Apply Groups"]
+    B -->|"Save Session"| I["Session Saved"]
+    B -->|"View Analytics"| J["Show Tab/Domain Stats"]
+    B -->|"Find Duplicates"| K["Close Duplicate Tabs"]
+    H --> L["Organized, Clutter-Free Browser"]
+    I --> L
+    J --> L
+    K --> L
+    style L fill:#b2f5ea,stroke:#319795,stroke-width:2px
+```
+
 # Architecture Overview: Smart Tab Organiser
 
 This document provides a technical overview of the Smart Tab Organiser Chrome Extension.
