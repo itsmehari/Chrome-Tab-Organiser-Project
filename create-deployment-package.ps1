@@ -78,6 +78,13 @@ Copy-Item -Path (Join-Path $BuildDirectory "*.js") -Destination $DistDirectory
 # Copy preview.js for content-based grouping preview
 Copy-Item -Path (Join-Path $SourceDirectory "preview.js") -Destination $DistDirectory
 
+# Include Standard Sites feature files
+Copy-Item -Path "website/standard-sites.html" -Destination $DistDirectory/website/standard-sites.html
+Copy-Item -Path "website/standard-sites.js" -Destination $DistDirectory/website/standard-sites.js
+
+# Include analytics.php
+Copy-Item -Path "website/components/analytics.php" -Destination $DistDirectory/website/components/analytics.php
+
 # 5. Final Message
 Write-Host-Colored "----------------------------------------" "White"
 Write-Host-Colored "Deployment complete!" "Green"

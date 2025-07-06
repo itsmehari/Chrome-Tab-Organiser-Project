@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Smart Tab Organiser - Free Settings</title>
+  <style>
+    body {
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .header h1 {
+      margin: 0;
+      color: #4a90e2;
+    }
+
+    .upgrade-banner {
+      background: #ff9800;
+      color: white;
+      padding: 15px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .upgrade-btn {
+      display: inline-block;
+      background: white;
+      color: #ff9800;
+      padding: 8px 20px;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+
+    .section {
+      background: #f5f5f5;
+      padding: 20px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+    }
+
+    .section h2 {
+      margin-top: 0;
+      color: #333;
+    }
+
+    .option-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .option-label {
+      flex: 1;
+    }
+
+    .option-control {
+      flex: 2;
+    }
+
+    .pro-feature {
+      opacity: 0.5;
+      pointer-events: none;
+      position: relative;
+    }
+
+    .pro-badge {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #ff9800;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+    }
+
+    button {
+      background: #4a90e2;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #357abd;
+    }
+
+    .saved-sessions {
+      margin-top: 20px;
+    }
+
+    .session-card {
+      background: white;
+      padding: 15px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .session-info {
+      flex: 1;
+    }
+
+    .session-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    #toast {
+      visibility: hidden;
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    #toast.show {
+      visibility: visible;
+      animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    }
+
+    @keyframes fadein {
+      from {bottom: 0; opacity: 0;}
+      to {bottom: 20px; opacity: 1;}
+    }
+
+    @keyframes fadeout {
+      from {bottom: 20px; opacity: 1;}
+      to {bottom: 0; opacity: 0;}
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Smart Tab Organiser Settings <small>Free Version</small></h1>
+  </div>
+
+  <div class="upgrade-banner">
+    Unlock all features with Smart Tab Organiser Pro!
+    <a href="https://colourchemist.co.in/Smart-Tab-Manager-Chrome-Extension/pricing.php" target="_blank" class="upgrade-btn">Upgrade Now</a>
+  </div>
+
+  <div class="section">
+    <h2>Basic Settings</h2>
+    <div class="option-row">
+      <div class="option-label">
+        <label for="auto-group">Auto-group tabs when count exceeds:</label>
+      </div>
+      <div class="option-control">
+        <select id="auto-group">
+          <option value="5">5 tabs</option>
+          <option value="10">10 tabs</option>
+          <option value="15">15 tabs</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="section pro-feature">
+    <span class="pro-badge">PRO</span>
+    <h2>Advanced Settings</h2>
+    <div class="option-row">
+      <div class="option-label">
+        <label>Smart grouping based on content</label>
+      </div>
+      <div class="option-control">
+        <input type="checkbox" disabled>
+      </div>
+    </div>
+    <div class="option-row">
+      <div class="option-label">
+        <label>Custom group colors</label>
+      </div>
+      <div class="option-control">
+        <input type="checkbox" disabled>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Saved Sessions</h2>
+    <div id="saved-sessions" class="saved-sessions">
+      <div id="no-sessions" style="text-align: center; color: #666; padding: 20px;">
+        No saved sessions yet
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script src="options.js"></script>
+</body>
+</html> 

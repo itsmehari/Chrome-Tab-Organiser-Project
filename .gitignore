@@ -14,4 +14,9 @@ lerna-debug.log*
 
 # Other
 .DS_Store
-.vscode/ 
+.vscode/
+
+# Standard Sites feature files (should be tracked)
+!website/standard-sites.html
+!website/standard-sites.js
+!website/components/analytics.php 

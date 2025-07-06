@@ -1,15 +1,14 @@
 {
   "manifest_version": 3,
-  "name": "Smart Tab Organiser - CC",
+  "name": "Smart Tab Organiser - Free",
   "version": "1.0",
-  "description": "Automatically group tabs by topic, save sessions, and analyze your browsing habits. All processing is done locally for 100% privacy.",
+  "description": "Free version: Organize your tabs by domain, save sessions, and manage tab groups. Upgrade for advanced features.",
   "homepage_url": "https://colourchemist.co.in/Smart-Tab-Manager-Chrome-Extension/index.php",
+  "author": "Hari Krishnan",
   "permissions": [
     "tabs",
     "tabGroups",
-    "storage",
-    "offscreen",
-    "scripting"
+    "storage"
   ],
   "host_permissions": [
     "<all_urls>"
@@ -38,13 +37,5 @@
   },
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self';"
-  },
-  "web_accessible_resources": [
-    {
-      "resources": [
-        "lib/compromise.min.js"
-      ],
-      "matches": ["<all_urls>"]
-    }
-  ]
+  }
 } 

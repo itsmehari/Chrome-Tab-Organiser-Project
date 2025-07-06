@@ -19,4 +19,13 @@ node_modules/
 .git
 .gitignore
 
-# Do NOT ignore lib/compromise.min.js (needed for extension runtime) 
+# Do NOT ignore lib/compromise.min.js (needed for extension runtime)
+
+# Standard Sites feature files (should be deployed)
+!website/standard-sites.html
+!website/standard-sites.js
+!website/components/analytics.php
+
+# New user-facing .js/.html files in website/ for deployment
+!website/new-user-facing-file.js
+!website/new-user-facing-file.html 
